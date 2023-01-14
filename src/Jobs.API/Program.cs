@@ -1,3 +1,7 @@
+using Jobs.API.Configs;
+using Jobs.API.Data;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -7,9 +11,29 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.Configure<StartupConfig>(c => builder.Configuration.GetSection("StartupConfig"));
+
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+builder.Services.AddDbContext<ApplicationContext>(opt =>
+{
+    opt.UseSqlite();
+
+    #if DEBUG
+
+    // This will log EF-generated SQL commands to the console
+    opt.UseLoggerFactory(LoggerFactory.Create(builder =>
+    {
+        builder.AddConsole();
+    }));
+
+    // This will log the params for those commands to hte console
+    opt.EnableSensitiveDataLogging();
+    opt.EnableDetailedErrors();
+
+    #endif
+});
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -17,9 +41,26 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
 app.UseAuthorization();
-
 app.MapControllers();
+
+var startupConfig = app.Services.GetService<StartupConfig>();
+if (startupConfig != null && startupConfig.RunDbMigrations)
+{
+    using (var scope = app.Services.CreateScope())
+    {
+        var context = scope.ServiceProvider.GetRequiredService<ApplicationContext>();
+        context.Database.Migrate();
+    }
+}
+
+if (startupConfig != null && startupConfig.SeedDatabase)
+{
+    using (var scope = app.Services.CreateScope())
+    {
+        var context = scope.ServiceProvider.GetRequiredService<ApplicationContext>();
+        DatabaseInitializer.Initialize(context);
+    }
+}
 
 app.Run();
