@@ -1,5 +1,5 @@
-using Jobs.API.Configs;
 using Jobs.API.Data;
+using Jobs.API.Models;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,8 +12,6 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.Configure<StartupConfig>(c => builder.Configuration.GetSection("StartupConfig"));
-
-var app = builder.Build();
 
 builder.Services.AddDbContext<ApplicationContext>(opt =>
 {
@@ -33,6 +31,8 @@ builder.Services.AddDbContext<ApplicationContext>(opt =>
 
     #endif
 });
+
+var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
