@@ -32,6 +32,15 @@ builder.Services.AddDbContext<ApplicationContext>(opt =>
     #endif
 });
 
+builder.Services.AddAuthentication("Bearer")
+.AddJwtBearer("Bearer", opt =>
+{
+    opt.RequireHttpsMetadata = false;
+    // We indicate the token must come from the authorization server at this URL
+    opt.Authority = "https://localhost:7069";
+    opt.Audience = "jobsapi";
+});
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -41,6 +50,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 

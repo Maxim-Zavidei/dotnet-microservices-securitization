@@ -1,5 +1,6 @@
 using Jobs.API.Data;
 using Jobs.API.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -7,6 +8,7 @@ namespace Jobs.API.Controllers;
 
 [ApiController]
 [Route("[controller]")]
+[Authorize]
 public class JobsController : ControllerBase
 {
     private readonly ILogger<JobsController> logger;
