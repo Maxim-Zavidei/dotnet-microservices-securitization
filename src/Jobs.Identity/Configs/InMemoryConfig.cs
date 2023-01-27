@@ -13,6 +13,19 @@ public static class InMemoryConfig
         new IdentityResources.Profile()
     };
 
+    public static IEnumerable<ApiScope> ApiScopes => new List<ApiScope>
+    {
+        new ApiScope("jobsapi.scope", "Jobs Api")
+    };
+
+    public static IEnumerable<ApiResource> ApiResources => new List<ApiResource>
+    {
+        new ApiResource("jobsapi", "Jobs Api")
+        {
+            Scopes = { "jobsapi.scope" }
+        }
+    };
+
     public static IEnumerable<Client> Clients => new List<Client>
     {
         new Client
@@ -23,7 +36,8 @@ public static class InMemoryConfig
             AllowedGrantTypes = GrantTypes.ResourceOwnerPasswordAndClientCredentials,
             AllowedScopes =
             {
-                IdentityServerConstants.StandardScopes.OpenId
+                IdentityServerConstants.StandardScopes.OpenId,
+                "jobsapi.scope"
             }
         }
     };
