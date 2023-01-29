@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Jobs.Mvc.Models;
 using Jobs.Mvc.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Jobs.Mvc.Controllers;
 
@@ -16,6 +17,7 @@ public class HomeController : Controller
         this.jobService = jobService;
     }
 
+    [Authorize]
     public async Task<IActionResult> Index()
     {
         var jobs = await jobService.GetJobs();
