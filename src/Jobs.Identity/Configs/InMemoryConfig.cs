@@ -39,6 +39,27 @@ public static class InMemoryConfig
                 IdentityServerConstants.StandardScopes.OpenId,
                 "jobsapi.scope"
             }
+        },
+        new Client
+        {
+            ClientName = "MvcClient",
+            ClientId = "mvc-client",
+            AllowedGrantTypes = GrantTypes.Code,
+            RedirectUris =
+            {
+                "https://localhost:7002/signin-oidc"
+            },
+            AllowedScopes =
+            {
+                IdentityServerConstants.StandardScopes.OpenId,
+                IdentityServerConstants.StandardScopes.Profile
+            },
+            ClientSecrets =
+            {
+                new Secret("mvc-client-secret".Sha512())
+            },
+            RequirePkce = false,
+            RequireConsent = true
         }
     };
 
