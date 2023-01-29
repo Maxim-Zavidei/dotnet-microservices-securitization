@@ -27,7 +27,11 @@ public static class InMemoryConfig
     {
         new ApiResource("jobsapi", "Jobs Api")
         {
-            Scopes = { "jobsapi.scope" }
+            Scopes = { "jobsapi.scope" },
+            UserClaims =
+            {
+                "role"
+            }
         }
     };
 
@@ -59,7 +63,8 @@ public static class InMemoryConfig
                 IdentityServerConstants.StandardScopes.OpenId,
                 IdentityServerConstants.StandardScopes.Profile,
                 IdentityServerConstants.StandardScopes.Address,
-                "roles"
+                "roles",
+                "jobsapi.scope"
             },
             ClientSecrets =
             {

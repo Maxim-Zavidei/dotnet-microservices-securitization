@@ -1,7 +1,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using IdentityModel;
 using Jobs.Mvc.Config;
-using Jobs.Mvc.Http;
+using Jobs.Mvc.Infrastructure;
 using Jobs.Mvc.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -15,8 +15,12 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 
 JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
-builder.Services.AddSingleton<IHttpClient, GeneralHttpClient>();
-builder.Services.AddTransient<IJobService, JobService>();
+
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddTransient<HttpClientAuthorizationDelegatingHandler>();
+
+builder.Services.AddHttpClient<IJobService, JobService>()
+.AddHttpMessageHandler<HttpClientAuthorizationDelegatingHandler>();
 
 builder.Services.Configure<ApiConfig>(builder.Configuration.GetSection("ApiSettings"));
 
@@ -43,6 +47,7 @@ builder.Services.AddAuthentication(opt =>
     opt.ClaimActions.MapUniqueJsonKey("address", "address");
     opt.Scope.Add("roles");
     opt.ClaimActions.MapUniqueJsonKey("role", "role");
+    opt.Scope.Add("jobsapi.scope");
     opt.TokenValidationParameters = new TokenValidationParameters
     {
         RoleClaimType = JwtClaimTypes.Role

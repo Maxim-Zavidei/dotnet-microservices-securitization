@@ -8,7 +8,7 @@ namespace Jobs.API.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-[Authorize]
+[Authorize(Roles = "Admin")]
 public class JobsController : ControllerBase
 {
     private readonly ILogger<JobsController> logger;
