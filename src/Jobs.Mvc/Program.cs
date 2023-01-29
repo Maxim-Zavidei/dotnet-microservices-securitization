@@ -1,15 +1,20 @@
+using System.IdentityModel.Tokens.Jwt;
+using IdentityModel;
 using Jobs.Mvc.Config;
 using Jobs.Mvc.Http;
 using Jobs.Mvc.Services;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 builder.Services.AddSingleton<IHttpClient, GeneralHttpClient>();
 builder.Services.AddTransient<IJobService, JobService>();
 
@@ -20,7 +25,10 @@ builder.Services.AddAuthentication(opt =>
     opt.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
     opt.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
 })
-.AddCookie(CookieAuthenticationDefaults.AuthenticationScheme)
+.AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, opt=>
+{
+    opt.AccessDeniedPath = "/Auth/AccessDenied";
+})
 .AddOpenIdConnect(OpenIdConnectDefaults.AuthenticationScheme, opt =>
 {
     opt.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
@@ -30,6 +38,17 @@ builder.Services.AddAuthentication(opt =>
     opt.SaveTokens = true;
     opt.ClientSecret = "mvc-client-secret";
     opt.UsePkce = true;
+
+    opt.Scope.Add("address");
+    opt.ClaimActions.MapUniqueJsonKey("address", "address");
+    opt.Scope.Add("roles");
+    opt.ClaimActions.MapUniqueJsonKey("role", "role");
+    opt.TokenValidationParameters = new TokenValidationParameters
+    {
+        RoleClaimType = JwtClaimTypes.Role
+    };
+
+    opt.GetClaimsFromUserInfoEndpoint = true;
 });
 
 var app = builder.Build();

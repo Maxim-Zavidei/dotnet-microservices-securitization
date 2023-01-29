@@ -10,7 +10,12 @@ public static class InMemoryConfig
     public static IEnumerable<IdentityResource> IdentityResources => new List<IdentityResource>
     {
         new IdentityResources.OpenId(),
-        new IdentityResources.Profile()
+        new IdentityResources.Profile(),
+        new IdentityResources.Address(),
+        new IdentityResource("roles", "User role(s)", new List<string>
+        {
+            "role"
+        })
     };
 
     public static IEnumerable<ApiScope> ApiScopes => new List<ApiScope>
@@ -52,7 +57,9 @@ public static class InMemoryConfig
             AllowedScopes =
             {
                 IdentityServerConstants.StandardScopes.OpenId,
-                IdentityServerConstants.StandardScopes.Profile
+                IdentityServerConstants.StandardScopes.Profile,
+                IdentityServerConstants.StandardScopes.Address,
+                "roles"
             },
             ClientSecrets =
             {
@@ -77,7 +84,10 @@ public static class InMemoryConfig
             Claims = new List<Claim>
             {
                 new Claim("given_name", "Bob"),
-                new Claim("family_name", "Bobsen")
+                new Claim("family_name", "Bobsen"),
+                new Claim("address", "123 Earth"),
+                new Claim("role", "Admin")
+
             }
         },
         new TestUser
@@ -88,7 +98,9 @@ public static class InMemoryConfig
             Claims = new List<Claim>
             {
                 new Claim("given_name", "Steve"),
-                new Claim("family_name", "Stevesen")
+                new Claim("family_name", "Stevesen"),
+                new Claim("address", "321 Jupiter"),
+                new Claim("role", "Editor")
             }
         }
     };

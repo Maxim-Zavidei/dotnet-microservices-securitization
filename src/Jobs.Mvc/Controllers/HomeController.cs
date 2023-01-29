@@ -24,6 +24,7 @@ public class HomeController : Controller
         return View(jobs);
     }
 
+    [Authorize(Roles = "Admin")]
     public IActionResult Privacy()
     {
         return View();
