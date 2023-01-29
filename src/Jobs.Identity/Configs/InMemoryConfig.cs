@@ -58,7 +58,7 @@ public static class InMemoryConfig
             {
                 new Secret("mvc-client-secret".Sha512())
             },
-            RequirePkce = false,
+            RequirePkce = true,
             RequireConsent = true
         }
     };

@@ -29,7 +29,7 @@ builder.Services.AddAuthentication(opt =>
     opt.ResponseType = OpenIdConnectResponseType.Code;
     opt.SaveTokens = true;
     opt.ClientSecret = "mvc-client-secret";
-    opt.UsePkce = false;
+    opt.UsePkce = true;
 });
 
 var app = builder.Build();
