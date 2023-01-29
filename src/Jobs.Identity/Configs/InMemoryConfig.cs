@@ -59,7 +59,11 @@ public static class InMemoryConfig
                 new Secret("mvc-client-secret".Sha512())
             },
             RequirePkce = true,
-            RequireConsent = true
+            RequireConsent = true,
+            PostLogoutRedirectUris =
+            {
+                "https://localhost:7002/signout-callback-oidc"
+            }
         }
     };
 

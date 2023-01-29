@@ -78,7 +78,7 @@ public class Index : PageModel
                     return this.LoadingPage(Input.ReturnUrl);
                 }
 
-                return Redirect(Input.ReturnUrl);
+                return Redirect("https://localhost:7002");
             }
             else
             {
