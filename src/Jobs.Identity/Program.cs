@@ -1,4 +1,6 @@
 using Jobs.Identity.Config;
+using Jobs.Identity.Extensions;
+using Microsoft.EntityFrameworkCore;
 using Serilog;
 using Serilog.Events;
 
@@ -14,19 +16,35 @@ Log.Logger = new LoggerConfiguration()
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddRazorPages();
+var migrationAssembly = typeof(Program).Assembly.GetName().Name;
+builder.Services.AddIdentityServer(opt =>
+{
+    opt.EmitStaticAudienceClaim = true;
+})
+.AddTestUsers(InMemoryConfig.TestUsers)
+.AddConfigurationStore(opt =>
+{
+    opt.ConfigureDbContext = e => e.UseNpgsql(
+        builder.Configuration.GetConnectionString("ConfigurationStoreDefaultConnection"),
+        sql => sql.MigrationsAssembly(migrationAssembly)
+    );
+})
+.AddOperationalStore(opt =>
+{
+    opt.ConfigureDbContext = e => e.UseNpgsql(
+        builder.Configuration.GetConnectionString("OperationalStoreDefaultConnection"),
+        sql => sql.MigrationsAssembly(migrationAssembly)
+    );
+})
+.AddDeveloperSigningCredential();
 
-builder.Services.AddIdentityServer()
-    .AddInMemoryIdentityResources(InMemoryConfig.IdentityResources)
-    .AddInMemoryClients(InMemoryConfig.Clients)
-    .AddTestUsers(InMemoryConfig.TestUsers)
-    .AddInMemoryApiResources(InMemoryConfig.ApiResources)
-    .AddInMemoryApiScopes(InMemoryConfig.ApiScopes)
-    .AddDeveloperSigningCredential();
+builder.Services.AddRazorPages();
 
 builder.Host.UseSerilog();
 
 var app = builder.Build();
+
+app.UseMigrationManager();
 
 app.UseRouting();
 app.UseStaticFiles();
