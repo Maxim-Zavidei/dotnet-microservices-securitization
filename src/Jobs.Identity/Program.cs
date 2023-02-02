@@ -1,5 +1,8 @@
 using Jobs.Identity.Config;
+using Jobs.Identity.Data;
 using Jobs.Identity.Extensions;
+using Jobs.Identity.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 using Serilog.Events;
@@ -15,6 +18,14 @@ Log.Logger = new LoggerConfiguration()
 .CreateLogger();
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddDbContext<ApplicationIdentityDbContext>(opt => {
+    opt.UseNpgsql(builder.Configuration.GetConnectionString("IdentityStoreDefaultConnection"));
+});
+
+builder.Services.AddIdentity<User, IdentityRole>()
+.AddEntityFrameworkStores<ApplicationIdentityDbContext>()
+.AddDefaultTokenProviders();
 
 var migrationAssembly = typeof(Program).Assembly.GetName().Name;
 builder.Services.AddIdentityServer(opt =>
@@ -36,6 +47,7 @@ builder.Services.AddIdentityServer(opt =>
         sql => sql.MigrationsAssembly(migrationAssembly)
     );
 })
+.AddAspNetIdentity<User>()
 .AddDeveloperSigningCredential();
 
 builder.Services.AddRazorPages();
