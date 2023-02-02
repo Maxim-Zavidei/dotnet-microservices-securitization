@@ -15,21 +15,7 @@ builder.Services.Configure<StartupConfig>(c => builder.Configuration.GetSection(
 
 builder.Services.AddDbContext<ApplicationContext>(opt =>
 {
-    opt.UseSqlite();
-
-    #if DEBUG
-
-    // This will log EF-generated SQL commands to the console
-    opt.UseLoggerFactory(LoggerFactory.Create(builder =>
-    {
-        builder.AddConsole();
-    }));
-
-    // This will log the params for those commands to hte console
-    opt.EnableSensitiveDataLogging();
-    opt.EnableDetailedErrors();
-
-    #endif
+    opt.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 
 builder.Services.AddAuthentication("Bearer")
@@ -37,7 +23,7 @@ builder.Services.AddAuthentication("Bearer")
 {
     opt.RequireHttpsMetadata = false;
     // We indicate the token must come from the authorization server at this URL
-    opt.Authority = "https://localhost:7069";
+    opt.Authority = "https://localhost:7000";
     opt.Audience = "jobsapi";
 });
 
@@ -64,7 +50,7 @@ if (startupConfig != null && startupConfig.RunDbMigrations)
     }
 }
 
-if (startupConfig != null && startupConfig.SeedDatabase)
+if (true)
 {
     using (var scope = app.Services.CreateScope())
     {

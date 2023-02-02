@@ -1,4 +1,3 @@
-using Jobs.Identity.Config;
 using Jobs.Identity.Data;
 using Jobs.Identity.Extensions;
 using Jobs.Identity.Models;
@@ -7,15 +6,15 @@ using Microsoft.EntityFrameworkCore;
 using Serilog;
 using Serilog.Events;
 
-Log.Logger = new LoggerConfiguration()
-.MinimumLevel.Debug()
-.MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
-.MinimumLevel.Override("Microsoft.Hosting.Lifetime", LogEventLevel.Information)
-.MinimumLevel.Override("System", LogEventLevel.Warning)
-.MinimumLevel.Override("Microsoft.AspNetCore.Authentication", LogEventLevel.Information)
-.Enrich.FromLogContext()
-.WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss}] {Level} {SourceContext}")
-.CreateLogger();
+// Log.Logger = new LoggerConfiguration()
+// .MinimumLevel.Debug()
+// .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
+// .MinimumLevel.Override("Microsoft.Hosting.Lifetime", LogEventLevel.Information)
+// .MinimumLevel.Override("System", LogEventLevel.Warning)
+// .MinimumLevel.Override("Microsoft.AspNetCore.Authentication", LogEventLevel.Information)
+// .Enrich.FromLogContext()
+// .WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss}] {Level} {SourceContext}")
+// .CreateLogger();
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,7 +31,6 @@ builder.Services.AddIdentityServer(opt =>
 {
     opt.EmitStaticAudienceClaim = true;
 })
-.AddTestUsers(InMemoryConfig.TestUsers)
 .AddConfigurationStore(opt =>
 {
     opt.ConfigureDbContext = e => e.UseNpgsql(
@@ -52,7 +50,7 @@ builder.Services.AddIdentityServer(opt =>
 
 builder.Services.AddRazorPages();
 
-builder.Host.UseSerilog();
+// builder.Host.UseSerilog();
 
 var app = builder.Build();
 
@@ -69,5 +67,7 @@ app.UseEndpoints(endpoints =>
 {
     endpoints.MapRazorPages();
 });
+
+app.SeedIdentityStore();
 
 app.Run();
