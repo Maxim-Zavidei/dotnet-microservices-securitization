@@ -19,8 +19,6 @@ using Serilog.Events;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
-
 builder.Services.AddDbContext<ApplicationIdentityDbContext>(opt => {
     opt.UseNpgsql(builder.Configuration.GetConnectionString("IdentityStoreDefaultConnection"));
 });
@@ -51,6 +49,12 @@ builder.Services.AddIdentityServer(opt =>
 .AddAspNetIdentity<User>()
 .AddDeveloperSigningCredential();
 
+builder.Services.Configure<DataProtectionTokenProviderOptions>(opt =>
+{
+    opt.TokenLifespan = TimeSpan.FromHours(2);
+});
+
+builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 builder.Services.AddRazorPages();
 
 // builder.Host.UseSerilog();

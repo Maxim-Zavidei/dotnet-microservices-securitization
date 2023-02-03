@@ -3,6 +3,7 @@ using AutoMapper;
 using IdentityModel;
 using IdentityServerHost.Pages;
 using Jobs.Identity.Models;
+using Jobs.Identity.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -16,17 +17,19 @@ public class Index : PageModel
 {
     private readonly IMapper mapper;
     private readonly UserManager<User> userManager;
+    private readonly IEmailService emailService;
 
     [BindProperty]
-    public InputModel inputModel { get; set; }
+    public required InputModel inputModel { get; set; }
         
-    public Index(IMapper mapper, UserManager<User> userManager)
+    public Index(IMapper mapper, UserManager<User> userManager, IEmailService emailService)
     {
         this.mapper = mapper;
         this.userManager = userManager;
+        this.emailService = emailService;
     }
 
-    public async Task<IActionResult> OnGet(string returnUrl)
+    public IActionResult OnGet(string returnUrl)
     {
         ViewData["ReturnUrl"] = returnUrl;
         return Page();
