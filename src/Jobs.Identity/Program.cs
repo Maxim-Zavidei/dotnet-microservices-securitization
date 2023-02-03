@@ -1,3 +1,4 @@
+using System.Reflection;
 using Jobs.Identity.Data;
 using Jobs.Identity.Extensions;
 using Jobs.Identity.Models;
@@ -17,6 +18,8 @@ using Serilog.Events;
 // .CreateLogger();
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
 builder.Services.AddDbContext<ApplicationIdentityDbContext>(opt => {
     opt.UseNpgsql(builder.Configuration.GetConnectionString("IdentityStoreDefaultConnection"));

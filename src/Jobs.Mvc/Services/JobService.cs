@@ -32,9 +32,6 @@ public class JobService : IJobService
     {
         var uri = API.Job.GetAllJobs(remoteServiceBaseUrl);
         var responseString = await apiClient.GetStringAsync(uri);
-        Console.WriteLine(responseString);
-        var result = JsonSerializer.Deserialize<IEnumerable<Job>>(responseString)!;
-        Console.WriteLine(result.ElementAt(1).Description);
-        return result;
+        return JsonSerializer.Deserialize<IEnumerable<Job>>(responseString)!;;
     }
 }
