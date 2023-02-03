@@ -1,4 +1,4 @@
-namespace Jobs.API.Models;
+namespace Jobs.Api.Models;
 
 public class StartupConfig
 {

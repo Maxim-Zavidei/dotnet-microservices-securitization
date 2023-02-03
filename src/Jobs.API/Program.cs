@@ -1,5 +1,5 @@
-using Jobs.API.Data;
-using Jobs.API.Models;
+using Jobs.Api.Data;
+using Jobs.Api.Models;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);

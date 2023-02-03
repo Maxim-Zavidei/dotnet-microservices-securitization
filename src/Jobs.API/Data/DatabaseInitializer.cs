@@ -1,6 +1,6 @@
-using Jobs.API.Models;
+using Jobs.Api.Models;
 
-namespace Jobs.API.Data;
+namespace Jobs.Api.Data;
 
 public class DatabaseInitializer
 {

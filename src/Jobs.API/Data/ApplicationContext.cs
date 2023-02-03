@@ -1,7 +1,7 @@
-using Jobs.API.Models;
+using Jobs.Api.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace Jobs.API.Data;
+namespace Jobs.Api.Data;
 
 public class ApplicationContext : DbContext
 {

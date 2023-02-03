@@ -1,10 +1,10 @@
-using Jobs.API.Data;
-using Jobs.API.Models;
+using Jobs.Api.Data;
+using Jobs.Api.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace Jobs.API.Controllers;
+namespace Jobs.Api.Controllers;
 
 [ApiController]
 [Route("[controller]")]
